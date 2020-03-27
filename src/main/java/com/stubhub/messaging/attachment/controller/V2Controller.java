@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
@@ -33,36 +34,43 @@ public class V2Controller {
 
     @PostMapping("/upload")
     @ResponseBody
-    public String upload(@RequestParam("file") MultipartFile multipartFileile) {
-        if (multipartFileile.isEmpty()) {
+    public String upload(@RequestParam("file") MultipartFile[] files) {
+        if (files == null || files.length == 0) {
             return "upload empty file!";
         }
 
-        String contentType = multipartFileile.getContentType();
-        String name = multipartFileile.getName();
-        String data = null;
-        try {
-            System.out.println(multipartFileile.getBytes());
-            System.out.println(multipartFileile.getBytes().toString().getBytes());
-            System.out.println(Base64.getEncoder().encodeToString(multipartFileile.getBytes()));
-            System.out.println(Base64.getEncoder().encodeToString(multipartFileile.getBytes().toString().getBytes()));
-//            data = multipartFileile.getBytes().toString();
-            data = Base64.getEncoder().encodeToString(multipartFileile.getBytes());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        if (data == null || data.isEmpty()){
-            return "data empty!!";
-        }
-
-        Attachment attachment = new Attachment();
-        attachment.setName(name);
-        attachment.setType(contentType);
-        attachment.setData(data);
-
         Attachments attachments = new Attachments();
-        attachments.setAttachments(Arrays.asList(attachment));
+        List<Attachment> attachmentList = new ArrayList<>();
+        attachments.setAttachments(attachmentList);
+
+        for (MultipartFile file : files){
+            String contentType = file.getContentType();
+            String name = file.getOriginalFilename();
+            String data = null;
+            try {
+//                System.out.println(multipartFileile.getBytes());
+//                System.out.println(multipartFileile.getBytes().toString().getBytes());
+//                System.out.println(Base64.getEncoder().encodeToString(multipartFileile.getBytes()));
+//                System.out.println(Base64.getEncoder().encodeToString(multipartFileile.getBytes().toString().getBytes()));
+//            data = multipartFileile.getBytes().toString();
+                data = Base64.getEncoder().encodeToString(file.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if (data == null || data.isEmpty()){
+                return "data empty!!";
+            }
+
+            Attachment attachment = new Attachment();
+            attachment.setName(name);
+            attachment.setType(contentType);
+            attachment.setData(data);
+
+            attachmentList.add(attachment);
+        }
+
+
 
         String str = attachments.toString() + "\n";
         v2EmailTrigger.sendDemoADHOCEmail(attachments);
