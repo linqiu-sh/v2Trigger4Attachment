@@ -41,7 +41,7 @@ public class V2Client {
     }
 
     public void send(MessageHubRequest.MessageHubRequestBuilder request) {
-        logger.info("message=Sending Email using MessageHub API");
+        logger.info("message=Sending Email using attachment-trigger");
         try {
             MessageHubRequest req = request.build();
             String body = toJson(req);

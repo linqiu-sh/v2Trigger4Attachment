@@ -1,2 +1,9 @@
 client:
   domainName: slcq072
+
+spring:
+  datasource:
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    url: jdbc:oracle:thin:@//slcq072ecommdb.stubcorp.com:1521/slcq072ecommdb
+    username: stub_01
+    password: dstub_01

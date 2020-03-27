@@ -6,7 +6,13 @@
 </head>
 <body>
 <form method="post" action="/upload" enctype="multipart/form-data">
-    <input type="file" name="file" multiple><br>
+    <input type="file" name="file" multiple ><br>
+    <input type="submit" value="upload">
+</form>
+
+⬇️这个用来上传多个CSV，然后insert 到SLCQ072 的 Users 表
+<form method="post" action="/uploadcsv" enctype="multipart/form-data">
+    <input type="file" name="csv" accept="text/csv" multiple ><br>
     <input type="submit" value="upload">
 </form>
 </body>
