@@ -1,0 +1,42 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.stubhub.messaging.attachment.dao.UserMapper">
+    <resultMap type="com.stubhub.messaging.attachment.model.Users" id="usermap">
+        <id column="ID" property="id"/>
+        <result column="USER_COOKIE_GUID" property="guid"/>
+        <result column="DEFAULT_EMAIL" property="defaultEmail"/>
+<!--        <result column="PREFERRED_LOCALE" property="locale"/>-->
+    </resultMap>
+
+    <select id="getUserById" resultMap="usermap">
+        SELECT * FROM stub.users WHERE ID = #{id}
+    </select>
+
+    <update id="mergeUsers" parameterType="java.util.List">
+        MERGE INTO stub.users t1
+        USING (
+        <foreach collection="list" item="item" separator="union all">
+            SELECT #{item.id} AS ID, #{item.defaultEmail} AS DEFAULT_EMAIL, #{item.guid} as USER_COOKIE_GUID FROM dual
+        </foreach>
+        ) t2
+        ON (t1.ID=t2.ID)
+        WHEN MATCHED THEN
+        UPDATE SET
+        t1.DEFAULT_EMAIL=t2.DEFAULT_EMAIL,
+        t1.USER_COOKIE_GUID=t2.USER_COOKIE_GUID
+        WHEN NOT MATCHED THEN
+        INSERT(ID,DEFAULT_EMAIL,USER_COOKIE_GUID)
+        VALUES(t2.ID,t2.DEFAULT_EMAIL,t2.USER_COOKIE_GUID)
+    </update>
+
+    <select id="getUsersByIdList" parameterType="java.util.List" resultMap="usermap">
+        SELECT * FROM stub.users WHERE ID IN
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+
+</mapper>

@@ -7,3 +7,12 @@ spring:
     url: jdbc:oracle:thin:@//slcq072ecommdb.stubcorp.com:1521/slcq072ecommdb
     username: stub_01
     password: dstub_01
+  servlet:
+    multipart:
+      max-file-size: 31457280
+      max-request-size: 31457280
+
+
+mybatis:
+  mapper-locations: classpath:mybatis/sql.xml
+

@@ -19,6 +19,6 @@ public class Users {
     private String defaultEmail;
 
     //PREFERRED_LOCALE
-    private String locale;
+//    private String locale;
 
 }
